@@ -23,7 +23,7 @@ const information = [
 ]
 
 function App() {
-  const { expanded, toggle } = useExpanded(false);
+  const { expanded, togglerProps } = useExpanded(false);
 
   useEffectAfterMount(() => {
     console.log("not called on first render");
@@ -48,7 +48,7 @@ function App() {
         })
       }
       <div style={{ marginTop: '3rem' }}>
-        <button onClick={toggle}>Click to view awesomeness...</button>
+        <button {...togglerProps}>Click to view awesomeness...</button>
         {expanded ? <p>{'😎'.repeat(50)}</p> : null}
       </div>
     </div>
