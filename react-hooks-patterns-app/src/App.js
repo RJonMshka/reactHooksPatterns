@@ -23,11 +23,15 @@ const information = [
 ]
 
 function App() {
-  const { expanded, getTogglerProps } = useExpanded(false);
+  const { expanded, getTogglerProps, reset, resetDep } = useExpanded(false);
 
   useEffectAfterMount(() => {
     console.log("not called on first render");
   }, [expanded])
+
+  useEffectAfterMount(() => {
+    console.log("reset was invoked - do cleanup here!!!");
+  }, [resetDep])
 
   const [activeIndex, setActiveIndex] = useState(null);
   const onExpand = e => setActiveIndex(e.target.dataset.index);
@@ -51,6 +55,7 @@ function App() {
       <div style={{ marginTop: '3rem' }}>
         <button { ...getTogglerProps( {id: 'button-one', 'aria-label': 'toggle button', onClick: customOnClickHandler})}>Click to view awesomeness...</button>
         {expanded ? <p>{'😎'.repeat(50)}</p> : null}
+        <button onClick={reset}>Reset</button>
       </div>
     </div>
 
