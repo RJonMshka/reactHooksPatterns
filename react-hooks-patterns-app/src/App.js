@@ -23,7 +23,7 @@ const information = [
 ]
 
 function App() {
-  const { expanded, togglerProps } = useExpanded(false);
+  const { expanded, getTogglerProps } = useExpanded(false);
 
   useEffectAfterMount(() => {
     console.log("not called on first render");
@@ -31,6 +31,7 @@ function App() {
 
   const [activeIndex, setActiveIndex] = useState(null);
   const onExpand = e => setActiveIndex(e.target.dataset.index);
+  const customOnClickHandler = () => console.log("custom click handler!!!");
   return (
     <div className="App">
      {
@@ -48,7 +49,7 @@ function App() {
         })
       }
       <div style={{ marginTop: '3rem' }}>
-        <button {...togglerProps}>Click to view awesomeness...</button>
+        <button { ...getTogglerProps( {id: 'button-one', 'aria-label': 'toggle button', onClick: customOnClickHandler})}>Click to view awesomeness...</button>
         {expanded ? <p>{'😎'.repeat(50)}</p> : null}
       </div>
     </div>
