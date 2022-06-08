@@ -23,15 +23,30 @@ const information = [
 ]
 
 function App() {
-  const { expanded, getTogglerProps, reset, resetDep } = useExpanded(false);
+  const hasViewedSecret = useRef(false);
+
+  const appReducer = (currentInternalState, action) => {
+    if (hasViewedSecret.current && action.type === useExpanded.types.toggleExpand) {
+      return {
+        ...action.internalChanges,
+        // overriding internal update
+        expanded: false
+      };
+    }
+    return action.internalChanges;
+  };
+
+  // passing the initial state and user reducer to our custom hook
+  const { expanded, getTogglerProps, reset, resetDep, override } = useExpanded(false, appReducer);
 
   useEffectAfterMount(() => {
     console.log("not called on first render");
-  }, [expanded])
+  }, [expanded]);
 
   useEffectAfterMount(() => {
-    console.log("reset was invoked - do cleanup here!!!");
-  }, [resetDep])
+    window.open('https://leanpub.com/reintroducing-react', '_blank');
+    hasViewedSecret.current = true;
+  }, [resetDep]);
 
   const [activeIndex, setActiveIndex] = useState(null);
   const onExpand = e => setActiveIndex(e.target.dataset.index);
@@ -55,8 +70,11 @@ function App() {
       <div style={{ marginTop: '3rem' }}>
         <button { ...getTogglerProps( {id: 'button-one', 'aria-label': 'toggle button', onClick: customOnClickHandler})}>Click to view awesomeness...</button>
         {expanded ? <p>{'😎'.repeat(50)}</p> : null}
-        <button onClick={reset}>Reset</button>
+        <button onClick={reset}>View Secret</button>
       </div>
+      {hasViewedSecret.current && (
+        <button onClick={override}>Be redeemed to view secret again</button>
+      )}
     </div>
 
   );
